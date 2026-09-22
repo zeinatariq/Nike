@@ -1,7 +1,7 @@
 let scCarousel = document.querySelector('#SC-Carousel'),
-    nextCarousel = scCarousel.querySelector('.next'),
-    prevCarousel = scCarousel.querySelector('.prev'),
-    slides = Array.from(scCarousel.querySelectorAll('.brand-carousel-item'));
+    nextCarousel = scCarousel ? scCarousel.querySelector('.next') : null,
+    prevCarousel = scCarousel ? scCarousel.querySelector('.prev') : null,
+    slides = scCarousel ? Array.from(scCarousel.querySelectorAll('.brand-carousel-item')) : [];
 
 function hideSlide() {
     let shown = document.querySelectorAll('#SC-Carousel .brand-carousel-item.active .show');
@@ -54,8 +54,8 @@ function prevSlide() {
     showSlide();
 }
 
-nextCarousel.addEventListener('click', nextSlide);
-prevCarousel.addEventListener('click', prevSlide);
+if (nextCarousel) nextCarousel.addEventListener('click', nextSlide);
+if (prevCarousel) prevCarousel.addEventListener('click', prevSlide);
 
 function buildLatestProducts() {
     let container = document.querySelector('#Latest .products');
@@ -66,31 +66,20 @@ function buildLatestProducts() {
         let discounted = priceAfterDiscount(product.price, product.discount);
         let imagesHtml = '';
         for (let i = 0; i < product.images.length; i++) {
-            imagesHtml += `<li onclick="showImg(this)"
-                ${i == product.images.length - 1 ? '' : 'class="me-2 me-md-0 mb-md-2"'}>
-                <img src="./../images_Nike/images/products${product.images[i]}" onerror="this.src='https://placehold.co/300x300/eeeeee/999999?text=No+Image'" alt="" class="img-fluid"></li>`;
+            imagesHtml += `<li onclick="showImg(this)" ${i == product.images.length - 1 ? '' : 'class="me-2 me-md-0 mb-md-2"'}>
+                <img src="./images_Nike/images/products/${product.images[i]}" onerror="this.src='https://placehold.co/300x300/eeeeee/999999?text=No+Image'" alt="" class="img-fluid"></li>`;
         }
 
         let cartItem = cart.find(c => c.id == product.id);
 
         container.innerHTML += `
-        <div class="product mb-3" data-product-id="${product.id}"
-            data-selected-size="${cartItem == null ? product.sizes[0] : cartItem.size}"
-            data-selected-color="${cartItem == null ? product.colors[0] : cartItem.color}">
+        <div class="product mb-3" data-product-id="${product.id}" data-selected-size="${cartItem == null ? product.sizes[0] : cartItem.size}" data-selected-color="${cartItem == null ? product.colors[0] : cartItem.color}">
             <div class="row">
                 <div class="col-lg-6 mb-md-4 mb-lg-0 product-images">
                     <div class="item">
                         <div class="row">
-                            <div class="col-md-2 col-lg-3 col-xl-2">
-                                <div class="item">
-                                    <ul class="list-unstyled">${imagesHtml}</ul>
-                                </div>
-                            </div>
-                            <div class="col-md-10 col-lg-9 col-xl-10 selected-image">
-                                <div class="item">
-                                    <img src="./../images_Nike/images/products${product.images[0]}" onerror="this.src='https://placehold.co/500x500/eeeeee/999999?text=No+Image'" alt="" class="img-fluid">
-                                </div>
-                            </div>
+                            <div class="col-md-2 col-lg-3 col-xl-2"><div class="item"><ul class="list-unstyled">${imagesHtml}</ul></div></div>
+                            <div class="col-md-10 col-lg-9 col-xl-10 selected-image"><div class="item"><img src="./images_Nike/images/products/${product.images[0]}" onerror="this.src='https://placehold.co/500x500/eeeeee/999999?text=No+Image'" alt="" class="img-fluid"></div></div>
                         </div>
                     </div>
                 </div>
@@ -98,22 +87,9 @@ function buildLatestProducts() {
                     <div class="item">
                         <h3>${product.name}</h3>
                         <p>${product.description}</p>
-                        <h6 class="price">
-                            <strong class="me-3">Price :</strong>
-                            <p class="mb-0">
-                                <span class="before-discount">${product.price} <sup>$</sup></span>
-                                <span class="after-discount">${discounted.toFixed(2)} <sup>$</sup></span>
-                            </p>
-                        </h6>
-                        <h6 class="size my-3">
-                            <strong class="me-3">Size :</strong>
-                            <ul class="list-unstyled mb-0">${createSizes(product.sizes, cartItem)}</ul>
-                        </h6>
-                        ${cartItem != null
-                            ? `<button class="btn mainButton remove"
-                                onclick="removeProductFromCart(this, ${product.id})">Remove From Cart</button>`
-                            : `<button class="btn mainButton"
-                                onclick="addProductToCart(this, ${product.id})">Add To Cart</button>`}
+                        <h6 class="price"><strong class="me-3">Price :</strong><p class="mb-0"><span class="before-discount">${product.price} <sup>$</sup></span><span class="after-discount">${discounted.toFixed(2)} <sup>$</sup></span></p></h6>
+                        <h6 class="size my-3"><strong class="me-3">Size :</strong><ul class="list-unstyled mb-0">${createSizes(product.sizes, cartItem)}</ul></h6>
+                        ${cartItem != null ? `<button class="btn mainButton remove" onclick="removeProductFromCart(this, ${product.id})">Remove From Cart</button>` : `<button class="btn mainButton" onclick="addProductToCart(this, ${product.id})">Add To Cart</button>`}
                     </div>
                 </div>
             </div>
@@ -130,32 +106,21 @@ function buildFeaturedProducts() {
         let discounted = priceAfterDiscount(product.price, product.discount);
         let indicatorsHtml = '';
         for (let i = 0; i < product.images.length; i++) {
-            indicatorsHtml += `<li onclick="showFeaturedImg(this)"
-                data-src="${product.images[i]}"
-                ${i == 0 ? 'class="active"' : ''}></li>`;
+            indicatorsHtml += `<li onclick="showFeaturedImg(this)" data-src="${product.images[i]}" ${i == 0 ? 'class="active"' : ''}></li>`;
         }
 
         container.innerHTML += `
         <div class="col-sm-6 col-lg-3 mb-3 product">
             <div class="item">
-                <p class="offer ${parseFloat(product.discount) == 0 ? 'd-none' : ''}">
-                    -${parseFloat(product.discount) * 100}%
-                </p>
+                <p class="offer ${parseFloat(product.discount) == 0 ? 'd-none' : ''}">-${parseFloat(product.discount) * 100}%</p>
                 <div class="head pb-5">
-                    <img src="./../images_Nike/images/products${product.images[0]}" onerror="this.src='https://placehold.co/400x400/eeeeee/999999?text=No+Image'" alt="" class="img-fluid">
+                    <img src="./images_Nike/images/products/${product.images[0]}" onerror="this.src='https://placehold.co/400x400/eeeeee/999999?text=No+Image'" alt="" class="img-fluid">
                     <i class="fas fa-search key" data-key-popup="product" data-product-id="${product.id}"></i>
-                    <div class="indicators">
-                        <ul class="list-unstyled">${indicatorsHtml}</ul>
-                    </div>
+                    <div class="indicators"><ul class="list-unstyled">${indicatorsHtml}</ul></div>
                 </div>
                 <div class="body text-center">
                     <h6>${product.name}</h6>
-                    <h6>
-                        ${product.discount != 0
-                            ? `<span class="before-discount">${product.price} <sup>$</sup></span>`
-                            : ''}
-                        <span class="after-discount">${discounted.toFixed(2)} <sup>$</sup></span>
-                    </h6>
+                    <h6>${product.discount != 0 ? `<span class="before-discount">${product.price} <sup>$</sup></span>` : ''}<span class="after-discount">${discounted.toFixed(2)} <sup>$</sup></span></h6>
                 </div>
             </div>
         </div>`;
@@ -177,9 +142,10 @@ function initPopups() {
             if (this.classList.contains('fa-search')) {
                 let id = this.getAttribute('data-product-id');
                 insertDataIntoPopup(id);
-            } else if (this.classList.contains('fa-shopping-cart')) {
+            } else if (this.classList.contains('fa-cart-shopping')) {
+   
                 showShopProducts();
-            }
+}
             scrollDownPopup(popup);
         });
     }
@@ -220,7 +186,6 @@ function initNavLinks() {
 
 window.addEventListener('scroll', function () {
     checkScrolledNav();
-
     let navEle = document.querySelector('nav.navbar');
     if (!navEle) return;
     let sections = ['Home', 'Latest', 'Feature'];
@@ -255,3 +220,40 @@ window.addEventListener('load', function () {
         document.body.style.overflowY = 'auto';
     }
 });
+
+function changeMainColor(colorName) {
+    let html = document.documentElement;
+    let newColor = getComputedStyle(html).getPropertyValue(`--${colorName}-color`).trim();
+    html.style.setProperty('--main-color', newColor);
+
+    let logoEle = document.querySelector('#Logo');
+    let correctImgs = document.querySelectorAll('.checkImg');
+    updateImg(colorName, logoEle, 'logo');
+    correctImgs.forEach(img => updateImg(colorName, img, 'correct'));
+}
+
+function updateImg(imgName, imgEle, commonName) {
+    if (!imgEle) return;
+    let currentSrc = imgEle.src || imgEle.getAttribute('href') || '';
+    let currentSrcArr = currentSrc.split('/');
+    currentSrcArr[currentSrcArr.length - 1] = `${imgName}-${commonName}.png`;
+    let newSrc = currentSrcArr.join('/');
+    imgEle.setAttribute('src', newSrc);
+}
+
+function checkScrolledNav() {
+    let navEle = document.querySelector('nav.navbar');
+    if (!navEle) return;
+    if (window.scrollY > 10) navEle.classList.add('scrolled');
+    else navEle.classList.remove('scrolled');
+}
+
+function updateActiveLink(sectionId) {
+    let navEle = document.querySelector('nav.navbar');
+    if (!navEle) return;
+    let currentNavLink = navEle.querySelector('.nav-link.active');
+    if (currentNavLink) currentNavLink.classList.remove('active');
+    let newLink = navEle.querySelector(`a[data-section-id="${sectionId}"]`);
+    if (newLink) newLink.classList.add('active');
+}
+
