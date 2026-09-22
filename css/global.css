@@ -1,0 +1,144 @@
+:root {
+    --main-color: #fb2527;
+    --first-color: #fb2527;
+    --second-color: #0f7ad7;
+    --third-color: #ed9721;
+}
+
+* {
+    font-family: "Nunito", sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(to right, #eaeaea, #dbdbdb, #f2f2f2, #ada996);
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+.brandColor { color: var(--main-color); }
+.brandBorder { border: 1px solid var(--main-color); }
+
+.brandButton {
+    background-color: transparent;
+    color: var(--main-color);
+    transition-duration: .5s;
+    border: 1px solid var(--main-color);
+}
+.brandButton:hover {
+    color: #fff;
+    background-color: var(--main-color);
+}
+.brandButton.remove {
+    color: var(--bs-warning);
+    border: 1px solid var(--bs-warning);
+}
+.brandButton.remove:hover {
+    background-color: var(--bs-warning);
+    color: #fff;
+}
+
+.mainButton {
+    background-color: transparent;
+    color: var(--main-color);
+    border: 1px solid var(--main-color);
+    transition-duration: .5s;
+}
+.mainButton:hover {
+    background-color: var(--main-color);
+    color: #fff;
+}
+.mainButton.remove {
+    color: var(--bs-warning);
+    border: 1px solid var(--bs-warning);
+    background-color: transparent;
+}
+.mainButton.remove:hover {
+    background-color: var(--bs-warning);
+    color: #fff;
+}
+
+.section-title { position: relative; }
+.section-title img { width: 22%; }
+.section-title h2 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    letter-spacing: 1.5px;
+    font-weight: 600;
+    width: 100%;
+    text-shadow: 2px 2px 2px rgba(0, 0, 0, .2);
+}
+
+.after-discount { font-weight: 600; font-size: 14px; color: #000; }
+.before-discount { font-size: 14px; text-decoration: line-through; color: var(--first-color); }
+
+.price, .size, .color, .size ul, .color ul { display: flex; }
+
+.size ul li {
+    border-radius: 5px;
+    border: 1px solid var(--main-color);
+    width: 26px;
+    height: 26px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    cursor: pointer;
+    transition-duration: .5s;
+}
+.size ul li.active { background-color: var(--main-color); color: #fff; }
+.size ul li:not(:last-child),
+.color ul li:not(:last-child) { margin-right: 10px; }
+
+.color ul li {
+    width: 15px;
+    height: 15px;
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    cursor: pointer;
+    transition-duration: .5s;
+    border: 1px solid var(--main-color);
+}
+.color ul li.active {
+    border: none;
+    box-shadow: rgba(0, 0, 0, .25) 0 54px 55px, rgba(0, 0, 0, .12) 0 -12px 30px, rgba(0, 0, 0, .12) 0 4px 6px, rgba(0, 0, 0, .17) 0 12px 13px, rgba(0, 0, 0, .09) 0 -3px 5px;
+    opacity: 1;
+    color: #fff;
+}
+
+button:focus { box-shadow: none !important; }
+.rotate-shoes { transform: rotate(-35deg); }
+
+.brand-loadingScreen {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #000;
+    z-index: 5000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.brand-loadingScreen.hide { transition-duration: 1s; opacity: 0; }
+.brand-loadingScreen .box { width: 500px; }
+
+footer {
+    margin-top: auto;
+    background-color: #333;
+    border: none;
+    color: #fff;
+}
+footer #SemiCode {
+    font-weight: bolder;
+    letter-spacing: 1.5px;
+    font-family: "Agency FB", sans-serif;
+}
