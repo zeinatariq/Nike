@@ -1,42 +1,50 @@
-let registerForm = document.querySelector("#Register form");
-let registerInputs = registerForm.querySelectorAll("input");
-let students = [];
-let id = 0;
-let tableBody = document.querySelector("#Data tbody")
-    ;
 
-let regexInputs = {
-    firstName: /^[A-Za-z]+$/,
-    lastName: /^[A-Za-z]+$/,
-    email: /^[A-Za-z][A-Za-z_0-9\.]+@(gmail|yahoo)\.(com|org)$/,
-    age: /^[0-9]{2}$/,
-    phone: /^(02)?01(0|1|2|5)[0-9]{8}$/,
-},
-    searchInput= document.querySelector("#SearchInput");
-
-if (localStorage.getItem('students') === null) {
-    updateLocalstorage();
-    
-} else {
-    students = JSON.parse(localStorage.getItem('students'));
-    id = students[students.length - 1]?.id ?? 0;
-    showStudents(students);
-}
-
-registerForm.addEventListener("submit", function (e) {
-
-    let formType = registerForm.getAttribute('data-type');
-    e.preventDefault();
-    if (formType == 'add') {
-        addStudent();
-        
-    } else if (formType == 'edit') {
-        editStudent();
+let latest = [
+    {
+        id: 1,
+        name: "Nike Air Max Pro",
+        price: 180,
+        discount: 0.15,
+     
+        sizes: ["38", "39", "40", "41", "42"],
+        colors: ["#000000", "#ffffff", "#e74c3c"],
+        images: ["products1-1.png", "products1-2.png", "products1-3.png"]
+    },
+    {
+        id: 2,
+        name: "Nike Revolution",
+        price: 140,
+        discount: 0.1,
+  
+        sizes: ["39", "40", "41", "42"],
+        colors: ["#34495e", "#2ecc71"],
+        images: ["products2-1.png", "products2-2.png"]
     }
+];
 
-   
-});
 
-searchInput.addEventListener("keyup", function () {
-    search(this.value);
-});
+let features = [
+    {
+        id: 17,
+        name: "Nike ZoomX Vaporfly",
+        price: 220,
+        discount: 0.2,
+    
+        sizes: ["39", "40", "41", "42", "43"],
+        colors: ["#e74c3c", "#34495e", "#f1c40f"],
+        images: ["products17-4.png", "products17-2.png", "products1-1.png"]
+    },
+    {
+        id: 18,
+        name: "Nike Air Force 1",
+        price: 160,
+        discount: 0,
+
+        sizes: ["38", "39", "40", "41"],
+        colors: ["#ffffff", "#000000"],
+        images: ["products2-1.png", "products2-2.png"]
+    }
+];
+
+let shoes = [];
+let products = [];

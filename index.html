@@ -4,116 +4,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="keywords" content="">
+    <title>Nike</title>
     <link rel="stylesheet" href="./css/all.min.css">
+    <link rel="stylesheet" href="./css/fonts.css">
     <link rel="stylesheet" href="./css/bootstrap.css">
+    <link rel="stylesheet" href="./css/global.css">
     <link rel="stylesheet" href="./css/index.css">
-    <link rel="shortcut icon" href="./images_ex5/images/logo-be01d065.png" type="image/x-icon">
-
-    <title>ex5</title>
-
+    <link rel="stylesheet" href="./css/responsive.css">
+    <link rel="shortcut icon" href="./images_Nike/images/first-logo.png">
 </head>
 
 <body>
 
-    <section id="Register">
-        <div class="container ">
-            <div class="head mb-5 text-center">
-                <img src="./images_ex5/images/logo-be01d065.png" alt="logo">
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="./images_Nike/images/first-logo.png" alt="logo" class="img-fluid" id="Logo">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0 column-gap-3">
+                    <li class="nav-item active">
+                        <a class="nav-link" aria-current="page" data-section-id="Home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-section-id="Latest">Latest</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-section-id="Feature">Feature</a>
+                    </li>
+                </ul>
+                <ul class="list-unstyled d-flex column-gap-3 mb-0">
+                    <li><i class="fa-solid fa-heart"></i></li>
+                    <li><i class="fa-solid fa-cart-shopping" data-key-popup="shop"></i></li>
+                    <li><i class="fa-solid fa-user" data-key-popup="login"></i></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <header id="Home">
+        <div id="SC-Carousel" class="vh-100">
+            <div class="brand-carousel-inner">
+                <div class="brand-carousel-item active h-100" data-color-name="first">
+                    <div class="container h-100">
+                        <div class="row h-100">
+                            <div class="col-lg-6 content-col">
+                                <div class="item">
+                                    <h6 class="brandColor fw-bolder">Nike Red Shoes</h6>
+                                    <h2 class="h1">Nike Metcon Shoes</h2>
+                                    <p>Lorem Ipsum Dolor Sit Amet Consectetur Adipisicing Elit. Repellat Maiores Et Eos
+                                        Eaque Veritatis Aut Laboriosam Earum Dolorem Iste Atque.</p>
+                                    <a class="btn brandButton" href="#Latest">see more</a>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 media-col">
+                                <div class="item">
+                                    <img src="./images_Nike/images/home-text-1.png" alt="HeaderImg">
+                                    <img src="./images_Nike/images/home-shoe-1.png" alt="headerImg">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="brand-carousel-item h-100" data-color-name="second">
+                    <div class="container h-100">
+                        <div class="row h-100">
+                            <div class="col-lg-6 content-col">
+                                <div class="item">
+                                    <h6 class="brandColor fw-bolder">Nike Blue Shoes</h6>
+                                    <h2 class="h1">Nike Metcon Shoes</h2>
+                                    <p>Lorem Ipsum Dolor Sit Amet Consectetur Adipisicing Elit. Repellat Maiores Et Eos
+                                        Eaque Veritatis Aut Laboriosam Earum Dolorem Iste Atque.</p>
+                                    <a class="btn brandButton" href="#Latest">see more</a>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 media-col">
+                                <div class="item">
+                                    <img src="./images_Nike/images/home-text-2.png" alt="HeaderImg">
+                                    <img src="./images_Nike/images/home-shoe-2.png" alt="headerImg">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="brand-carousel-item h-100" data-color-name="third">
+                    <div class="container h-100">
+                        <div class="row h-100">
+                            <div class="col-lg-6 content-col">
+                                <div class="item">
+                                    <h6 class="brandColor fw-bolder">Nike Yellow Shoes</h6>
+                                    <h2 class="h1">Nike Metcon Shoes</h2>
+                                    <p>Lorem Ipsum Dolor Sit Amet Consectetur Adipisicing Elit. Repellat Maiores Et Eos
+                                        Eaque Veritatis Aut Laboriosam Earum Dolorem Iste Atque.</p>
+                                    <a class="btn brandButton" href="#Latest">see more</a>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 media-col">
+                                <div class="item">
+                                    <img src="./images_Nike/images/home-text-3.png" alt="HeaderImg">
+                                    <img src="./images_Nike/images/home-shoe-3.png" alt="headerImg">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn brandButton prev rounded-circle"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="btn brandButton next rounded-circle"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+    </header>
+
+<section id="Offer">
+    <div class="row g-0">
+        <div class="part1 col-sm-6 p-0 m-0">
+            <div class="item">
+                <a href="#">
+                    <img src="./images_Nike/images/home-banner-1.png" alt="" class="img-fluid">
+                </a>
+            </div>
+        </div>
+        <div class="part2 col-sm-6 p-0 m-0">
+            <div class="item">
+                <a href="#">
+                    <img src="./images_Nike/images/home-banner-2.png" alt="" class="img-fluid">
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+    
+
+    <section id="Latest" class="py-5">
+        <div class="container">
+            <div class="section-title text-center">
+                <h2>LATEST PRODUCTS</h2>
+                <img src="./images_Nike/images/first-correct.png" alt="correct" class="checkImg">
+            </div>
+            <div class="products"></div>
+        </div>
+    </section>
+
+    <section id="Feature" class="py-5">
+        <div class="container">
+            <div class="section-title text-center">
+                <h2>FEATURE PRODUCTS</h2>
+                <img src="./images_Nike/images/first-correct.png" alt="correct" class="checkImg">
+            </div>
+            <div class="row products"></div>
+        </div>
+    </section>
+
+    <div class="brand-popup" popup-name="product">
+        <div class="box"></div>
+    </div>
+
+    <div class="brand-popup" popup-name="login">
+        <div class="box">
+            <div class="head mb-4 mb-lg-5">
+                <h3 class="text-center">Login</h3>
+                <i class="far fa-times-circle exit" data-key-popup="login"></i>
             </div>
             <div class="body">
-                <form action="" class=" m-auto py-3 px-4 rounded-4" data-type="add">
-                    <h3 class="mb-3 text-center">Students System</h3>
+                <form>
                     <div class="input-group mb-3">
-                        <span class="input-group-text">
-                            <i class="fa-solid fa-user"></i>
-                        </span>
-                        <input type="text" class="form-control" placeholder="First Name *" name="firstName"
-                            onblur="checkInput(this)" data-valid="false">
-
+                        <input type="text" class="form-control" name="userName" placeholder="UserName *"
+                            autocomplete="off">
                     </div>
-                    <p class="alert alert-danger d-none" data-error-name="firstName" role="alert"></p>
-
                     <div class="input-group mb-3">
-                        <span class="input-group-text">
-                            <i class="fa-solid fa-user"></i>
-                        </span>
-                        <input type="text" class="form-control" placeholder="Last Name *" name="lastName"
-                            onblur="checkInput(this)" data-valid="false">
+                        <input type="password" class="form-control" name="password" placeholder="Password *"
+                            autocomplete="off">
                     </div>
-                    <p class="alert alert-danger d-none" data-error-name="lastName" role="alert"></p>
-
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">
-                            <i class="fa-solid fa-envelope"></i>
-                        </span>
-                        <input type="text" class="form-control" placeholder="Email *" name="email"
-                            onblur="checkInput(this)" data-valid="false">
+                    <div class="input-group">
+                        <button class="btn btn-success d-block w-100">Login</button>
                     </div>
-                    <p class="alert alert-danger d-none" data-error-name="email" role="alert"></p>
-
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">
-                            <i class="fa-solid fa-hashtag"></i>
-                        </span>
-                        <input type="text" class="form-control" name="age" placeholder="Age *"
-                            onblur="checkInput(this)" data-valid="false">
-                    </div>
-                    <p class="alert alert-danger d-none" data-error-name="age" role="alert"></p>
-
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">
-                            <i class="fa-solid fa-mobile-button"></i>
-                        </span>
-                        <input type="text" class="form-control" placeholder="Phone *" name="phone"
-                            onblur="checkInput(this)" data-valid="false">
-
-
-                    </div>
-                    <p class="alert alert-danger d-none" data-error-name="phone" role="alert"></p>
-                    <button class="btn btn-success w-100">Add</button>
-
                 </form>
-
             </div>
         </div>
-    </section>
+    </div>
 
-    <section id="Search" class="my-5 mx-auto w-25">
-        <div class="input-group mb-3 ">
-            <span class="input-group-text">
-                <i class="fa-solid fa-magnifying-glass"></i>
-            </span>
-            <input type="text" class="form-control" name="Search" id="SearchInput" placeholder="Search...">
+    <div class="brand-popup" popup-name="shop">
+        <div class="box">
+            <div class="head mb-4 mb-lg-5">
+                <h3 class="text-center">Shop</h3>
+                <i class="far fa-times-circle exit" data-key-popup="shop"></i>
+            </div>
+            <div class="body">
+                <p class="alert alert-warning text-center d-none">There are no products</p>
+                <div class="row"></div>
+                <button class="btn d-block w-100 d-none buy" >Buy Now</button>
+            </div>
         </div>
-    </section>
+    </div>
 
-    <section id="Data" class="w-75 m-auto mb-5">
-        <div class="table-responsive">
-            <table class="table table-striped table-hover">
-                <thead class="table-dark">
-                    <tr>
-                        <th>#</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Email</th>
-                        <th>Age</th>
-                        <th>Phone</th>
-                        <th>Option</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td id="TableAlert" class="table-warning text-center" colspan="7 ">There are no data</td>
-                    </tr>
-
-                </tbody>
-            </table>
+    <div class="brand-loadingScreen">
+        <div class="box">
+            <img src="./images_Nike/images/nike.gif" alt="" class="img-fluid">
         </div>
-    </section>
+    </div>
+
+    <footer class="py-2 text-center">
+        <p class="m-0">&copy; 2021 <span id="SemiCode">SemiCode</span>, Ltd. | All Rights Reserved .</p>
+    </footer>
 
     <script src="./js/bootstrap.js"></script>
+    <script src="./js/shoes.js"></script>
     <script src="./js/function.js"></script>
     <script src="./js/index.js"></script>
 </body>

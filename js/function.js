@@ -1,197 +1,470 @@
-function getStudent(studentId) {
-    let student = { id: studentId };
-
-    registerInputs.forEach(function (input) {
-        let key = input.name,
-            value = input.value;
-        student[key] = value;
-    });
-
-    return student;
+function priceAfterDiscount(price, discount) {
+    return parseFloat(price) - parseFloat(price) * parseFloat(discount);
 }
 
-function addStudent() {
-    let focusInput = registerForm.querySelector("input:focus"),
-        invalidInput = registerForm.querySelector("input[data-valid='false']");
-        
-    focusInput?.blur();
-    let invalidClassInput = registerForm.querySelector("input.is-invalid");
-
-    if (invalidClassInput !== null || invalidInput !== null) {
-        return;
-    }
+function getProductById(id) {
+    let allProducts = [];
+    if (typeof latest !== 'undefined') allProducts = allProducts.concat(latest);
+    if (typeof features !== 'undefined') allProducts = allProducts.concat(features);
+    if (typeof shoes !== 'undefined') allProducts = allProducts.concat(shoes);
+    if (typeof products !== 'undefined') allProducts = allProducts.concat(products);
     
-    let student = getStudent(++id);
-    students.push(student);
-    updateLocalstorage();
-    showStudent(student);
-    isNoData(students);
-    resetForm();
+    return allProducts.find(p => p.id == id);
 }
 
-
-
-
-function showStudent(student) {
-    tableBody.innerHTML += `
-        <tr data-student-id="${student.id}">
-            <td>${student.id}</td>
-            <td>${student.firstName}</td>
-            <td>${student.lastName}</td>
-            <td>${student.email}</td>
-            <td>${student.age}</td>
-            <td>${student.phone}</td>
-            <td>
-                <div class="buttons">
-                    <button class="btn btn-info text-light me-2" onclick="insertStudentIntoForm(${student.id})">Edit</button>
-                    <button class="btn btn-danger text-light" onclick="deleteStudent(${student.id},this)">Delete</button>
-                </div>
-            </td>
-        </tr>
-    `;
-}
-
-function showStudents(data) {
-    tableBody.innerHTML = ` <tr>
-        <td id="TableAlert" class="table-warning text-center" colspan="7">There are no data</td>
-    </tr>`;
-    data.forEach(function (student) {
-        showStudent(student);
-    });
-    isNoData(data);
-}
-
-function checkInput(input) {
-    let inputName = input.name,
-        inputValue = input.value,
-        isEmpty = inputValue === "",
-        errorEle = document.querySelector(`p.alert[data-error-name="${inputName}"]`),
-        isInvalid = !regexInputs[inputName].test(inputValue),
-        errorMsg = "";
-
-    if (isEmpty) {
-        errorMsg = "This field is required.";
-    } else if (isInvalid) {
-        errorMsg = "Invalid field.";
+function parents(ele, selector = null) {
+    let node = ele;
+    while ((node = node.parentElement)) {
+        if (node.classList.contains('product')) break;
     }
+    return selector == null ? node : node.querySelector(selector);
+}
 
-    if (isEmpty || isInvalid) {
-        input.classList.add("is-invalid");
-        input.classList.remove("is-valid");
-        if (errorEle) {
-            errorEle.textContent = errorMsg;
-            errorEle.classList.remove('d-none');
+function moveActive(ele) {
+    let siblings = ele.parentElement.children;
+    for (let s of siblings) s.classList.remove('active');
+    ele.classList.add('active');
+}
+
+function showImg(ele) {
+    let img = ele.firstElementChild;
+    let src = img.getAttribute('src');
+    let selectedImg = ele.parentElement.parentElement.parentElement
+        .nextElementSibling.firstElementChild.firstElementChild;
+    selectedImg.setAttribute('src', src);
+}
+
+function showFeaturedImg(ele) {
+    let headImg = ele.parentElement.parentElement.parentElement.firstElementChild;
+    let src = ele.getAttribute('data-src');
+    headImg.setAttribute('src', `images_Nike/images/products/${src}`);
+    headImg.setAttribute('onerror', "this.src='https://placehold.co/400x400/eeeeee/999999?text=No+Image'");
+    moveActive(ele);
+}
+
+let cart = [];
+
+function updateLocalStorage() {
+    localStorage.setItem('shopProducts', JSON.stringify(cart));
+}
+
+function loadCartFromStorage() {
+    let stored = localStorage.getItem('shopProducts');
+    cart = stored == null ? [] : JSON.parse(stored);
+}
+
+function updateSize(ele, size) {
+    parents(ele).setAttribute('data-selected-size', size);
+}
+
+function updateColor(ele, color) {
+    parents(ele).setAttribute('data-selected-color', color);
+}
+
+function addProductToCart(btn, id) {
+    let productEle = document.querySelector(`.product[data-product-id="${id}"]`);
+    let size = productEle.getAttribute('data-selected-size');
+    let color = productEle.getAttribute('data-selected-color');
+    cart.push({ id: id, size: size, color: color });
+    updateLocalStorage();
+    btn.textContent = 'Remove From Cart';
+    btn.classList.add('remove');
+    btn.setAttribute('onclick', `removeProductFromCart(this, ${id})`);
+}
+
+function removeProductFromCart(btn, id) {
+    let product = getProductById(id);
+    let index = cart.findIndex(c => c.id == id);
+    cart.splice(index, 1);
+    updateLocalStorage();
+    btn.textContent = 'Add To Cart';
+    btn.classList.remove('remove');
+    btn.setAttribute('onclick', `addProductToCart(this, ${product.id})`);
+}
+
+function createSizes(sizes, cartItem) {
+    let html = '';
+    for (let i = 0; i < sizes.length; i++) {
+        if (cartItem == null) {
+            html += `<li class="${i == 0 ? 'active' : ''}" onclick="moveActive(this); updateSize(this, '${sizes[i]}');">${sizes[i]}</li>`;
+        } else {
+            html += `<li class="${sizes[i] == cartItem.size ? 'active' : ''}" onclick="moveActive(this); updateSize(this, '${sizes[i]}');">${sizes[i]}</li>`;
         }
-        input.dataset.valid = false;
-    } else {
-        input.classList.remove("is-invalid");
-        input.classList.add("is-valid");
-        if (errorEle) {
-            errorEle.classList.add('d-none');
+    }
+    return html;
+}
+
+function createColors(colors, cartItem) {
+    let html = '';
+    for (let i = 0; i < colors.length; i++) {
+        if (cartItem == null) {
+            html += `<li style="background-color:${colors[i]};" onclick="moveActive(this); updateColor(this, '${colors[i]}');" class="${i == 0 ? 'active' : ''}"></li>`;
+        } else {
+            html += `<li style="background-color:${colors[i]};" onclick="moveActive(this); updateColor(this, '${colors[i]}');" class="${colors[i] == cartItem.color ? 'active' : ''}"></li>`;
         }
-        input.dataset.valid = true;
     }
+    return html;
 }
 
-function resetForm() {
-    registerForm.reset();
-    registerInputs.forEach(function (input) {
-        input.classList.remove('is-valid');
-        input.classList.remove('is-invalid');
-        let errorEle = document.querySelector(`p.alert[data-error-name="${input.name}"]`);
-        if (errorEle) {
-            errorEle.classList.add('d-none');
-        }
-    });
-    registerForm.setAttribute('data-type', 'add');
-    delete registerForm.dataset.studentId;
+function scrollDownPopup(popup) {
+    popup.classList.add('active');
+    setTimeout(() => {
+        popup.classList.add('show');
+        setTimeout(() => popup.firstElementChild.classList.add('show'), 100);
+    }, 100);
 }
 
-function updateLocalstorage() {
-    localStorage.setItem('students', JSON.stringify(students));
+function scrollUpPopup(popup) {
+    popup.firstElementChild.classList.remove('show');
+    setTimeout(() => {
+        popup.classList.remove('show');
+        setTimeout(() => popup.classList.remove('active'), 100);
+    }, 500);
 }
 
-function getStudentIndex(id) {
-    return students.findIndex((student) => student.id == id);
-    
+function showImgOfPopup(ele) {
+    let img = ele.firstElementChild;
+    let src = img.getAttribute('src');
+    let target = ele.parentElement.parentElement.previousElementSibling.firstElementChild;
+    target.setAttribute('src', src);
 }
 
-function deleteStudent(id, that) {
-    if (!confirm("Are you sure?")) {
-        return; 
+function insertDataIntoPopup(id) {
+    let product = getProductById(id);
+    let popup = document.querySelector('.brand-popup[popup-name="product"]');
+    if (!popup) return;
+    let box = popup.firstElementChild;
+    let discounted = priceAfterDiscount(product.price, product.discount);
+    let cartItem = cart.find(c => c.id == id);
+
+    let imagesHtml = '';
+    for (let img of product.images) {
+        imagesHtml += `<li class="col" onclick="showImgOfPopup(this)"><img src="images_Nike/images/products/${img}" onerror="this.src='https://placehold.co/150x150/eeeeee/999999?text=x'" alt="" class="img-fluid"></li>`;
     }
-    let studentIndex = getStudentIndex(id),
-        trEle = that.closest('tr');
 
-    students.splice(studentIndex, 1);
-    trEle.remove();
-    updateLocalstorage();
-    isNoData(students);
-}
-function isNoData(data){
-
-    let TableAlert = document.querySelector("#TableAlert");
-    if (data.length == 0) {
-        TableAlert.classList.remove('d-none');
-        
-    } else {
-        TableAlert.classList.add('d-none');
-    }
-}
-
-function insertStudentIntoForm(id) {
-    resetForm();
-    let editStudent = students.find(function (student) {
-        return student.id == id;
-    }),
-        formBtn = registerForm.querySelector("button");
-    
-    for (let input of registerInputs) {
-        input.value = editStudent[input.name];
-    };
-
-    formBtn.textContent = "Edit";
-    formBtn.classList.add('btn-info', 'text-light');
-    formBtn.classList.remove('btn-success');
-    registerForm.setAttribute('data-type', 'edit');
-    registerForm.setAttribute('data-student-id', id);
-}
-
-
-function editStudent() {
-    let studentId = registerForm.dataset.studentId,
-        student = getStudent(studentId),
-        studentIndex = getStudentIndex(studentId),
-        trEle = tableBody.querySelector(`tr[data-student-id="${studentId}"]`);
-
-    students[studentIndex] = student;
-
-    trEle.innerHTML = `
-        <td>${student.id}</td>
-        <td>${student.firstName}</td>
-        <td>${student.lastName}</td>
-        <td>${student.email}</td>
-        <td>${student.age}</td>
-        <td>${student.phone}</td>
-        <td>
-            <div class="buttons">
-                <button class="btn btn-info text-light me-2" onclick="insertStudentIntoForm(${student.id})">Edit</button>
-                <button class="btn btn-danger text-light" onclick="deleteStudent(${student.id},this)">Delete</button>
+    box.innerHTML = `
+    <div class="row product" data-product-id="${product.id}" data-selected-size="${cartItem == null ? product.sizes[0] : cartItem.size}" data-selected-color="${cartItem == null ? product.colors[0] : cartItem.color}">
+        <div class="col-md-6">
+            <div class="item">
+                <div class="img"><img src="images_Nike/images/products/${product.images[0]}" onerror="this.src='https://placehold.co/400x400/eeeeee/999999?text=No+Image'" alt="" class="img-fluid"></div>
+                <div class="images"><ul class="list-unstyled row">${imagesHtml}</ul></div>
             </div>
-        </td>`;
-
-    updateLocalstorage();
-    resetForm();
+        </div>
+        <div class="col-md-6">
+            <div class="item">
+                <h3 class="mb-3">${product.name}</h3>
+                <h6>${product.discount != 0 ? `<span class="before-discount">${product.price} <sup>$</sup></span>` : ''}<span class="after-discount">${discounted.toFixed(2)} <sup>$</sup></span></h6>
+                <hr>
+                <p>${product.description}</p>
+                <h6 class="size my-3"><strong class="me-3">Size :</strong><ul class="list-unstyled mb-0">${createSizes(product.sizes, cartItem)}</ul></h6>
+                <h6 class="color my-3"><strong class="me-3">Color :</strong><ul class="list-unstyled mb-0">${createColors(product.colors, cartItem)}</ul></h6>
+                ${cartItem != null ? `<button class="btn mainButton remove" onclick="removeProductFromCart(this, ${product.id})">Remove From Cart</button>` : `<button class="btn mainButton" onclick="addProductToCart(this, ${product.id})">Add To Cart</button>`}
+            </div>
+        </div>
+    </div>`;
 }
 
+function showShopProducts() {
+    let container = document.querySelector('.brand-popup[popup-name="shop"] .body .row');
+    if (!container) return;
+    container.innerHTML = '';
 
-function search(searchValue) {
-    let filteredStudents = students.filter(function (student) {
-        return student.firstName.toLowerCase().includes(searchValue.toLowerCase()) || 
-            student.lastName.toLowerCase().includes(searchValue.toLowerCase()) ||
-            student.email.toLowerCase().includes(searchValue.toLowerCase()) || 
-            student.phone.toLowerCase().includes(searchValue.toLowerCase()) ||
-            student.age.toLowerCase().includes(searchValue.toLowerCase());
-    });
-    showStudents(filteredStudents);
+    for (let item of cart) {
+        let product = getProductById(item.id);
+        let discounted = priceAfterDiscount(product.price, product.discount);
+        container.innerHTML += `
+        <div class="col-sm-6 col-md-4 product mb-3" data-product-id="${item.id}">
+            <div class="item">
+                <div class="product-head"><img src="images_Nike/images/products/${product.images[0]}" onerror="this.src='https://placehold.co/300x300/eeeeee/999999?text=No+Image'" alt="" class="img-fluid"></div>
+                <div class="product-body">
+                    <h5>${product.name}</h5>
+                    <h6 class="price my-3"><strong class="me-3">Price :</strong><p class="mb-0"><span class="before-discount">${product.price} <sup>$</sup></span><span class="after-discount">${discounted.toFixed(2)} <sup>$</sup></span></p></h6>
+                    <h6 class="size my-3"><strong class="me-3">Size :</strong><ul class="list-unstyled mb-0"><li class="active">${item.size}</li></ul></h6>
+                    <h6 class="color my-3"><strong class="me-3">Color :</strong><ul class="list-unstyled mb-0"><li class="active" style="background-color:${item.color};"></li></ul></h6>
+                    <button class="btn btn-danger d-block w-100" onclick="removeShopProduct(${item.id})">Remove</button>
+                </div>
+            </div>
+        </div>`;
+    }
+    isShopProductsEmpty();
+}
+
+function isShopProductsEmpty() {
+    let alert = document.querySelector('.brand-popup[popup-name="shop"] .body p.alert');
+    let buyBtn = document.querySelector('.brand-popup[popup-name="shop"] .body > button');
+    if (!alert || !buyBtn) return;
+    if (cart.length == 0) {
+        alert.classList.remove('d-none');
+        buyBtn.classList.add('d-none');
+    } else {
+        alert.classList.add('d-none');
+        buyBtn.classList.remove('d-none');
+    }
+}
+
+function removeShopProduct(id) {
+    let index = cart.findIndex(c => c.id == id);
+    cart.splice(index, 1);
+    updateLocalStorage();
+    let productEle = document.querySelector(`.brand-popup[popup-name="shop"] .product[data-product-id="${id}"]`);
+    if (productEle) productEle.remove();
+    isShopProductsEmpty();
+}
+
+let scCarousel = document.querySelector('#SC-Carousel'),
+    nextCarousel = scCarousel ? scCarousel.querySelector('.next') : null,
+    prevCarousel = scCarousel ? scCarousel.querySelector('.prev') : null,
+    slides = scCarousel ? Array.from(scCarousel.querySelectorAll('.brand-carousel-item')) : [];
+
+function hideSlide() {
+    let shown = document.querySelectorAll('#SC-Carousel .brand-carousel-item.active .show');
+    for (let el of shown) el.classList.remove('show');
+}
+
+function showSlide() {
+    let active = document.querySelector('#SC-Carousel .brand-carousel-item.active');
+    if (!active) return;
+    let img1 = active.querySelector('.media-col img:nth-of-type(1)');
+    let img2 = active.querySelector('.media-col img:nth-of-type(2)');
+    let item1 = active.querySelector('.content-col .item');
+
+    if (img2) img2.classList.add('show');
+    setTimeout(() => {
+        if (img1) img1.classList.add('show');
+        setTimeout(() => { if (item1) item1.classList.add('show'); }, 500);
+    }, 500);
+}
+
+function nextSlide() {
+    let current = document.querySelector('#SC-Carousel .brand-carousel-item.active');
+    if (!current) return;
+    let idx = slides.findIndex(s => s == current);
+    idx = (idx == slides.length - 1) ? -1 : idx;
+    let newSlide = slides[idx + 1];
+    let colorName = newSlide.dataset.colorName;
+
+    hideSlide();
+    current.classList.remove('active');
+    newSlide.classList.add('active');
+
+    changeMainColor(colorName);
+    showSlide();
+}
+
+function prevSlide() {
+    let current = document.querySelector('#SC-Carousel .brand-carousel-item.active');
+    if (!current) return;
+    let idx = slides.findIndex(s => s == current);
+    idx = (idx == 0) ? slides.length : idx;
+    let newSlide = slides[idx - 1];
+    let colorName = newSlide.dataset.colorName;
+
+    hideSlide();
+    current.classList.remove('active');
+    newSlide.classList.add('active');
+
+    changeMainColor(colorName);
+    showSlide();
+}
+
+if (nextCarousel) nextCarousel.addEventListener('click', nextSlide);
+if (prevCarousel) prevCarousel.addEventListener('click', prevSlide);
+
+function buildLatestProducts() {
+    let container = document.querySelector('#Latest .products');
+    if (!container) return;
+    container.innerHTML = '';
+
+    for (let product of latest) {
+        let discounted = priceAfterDiscount(product.price, product.discount);
+        let imagesHtml = '';
+        for (let i = 0; i < product.images.length; i++) {
+            imagesHtml += `<li onclick="showImg(this)" ${i == product.images.length - 1 ? '' : 'class="me-2 me-md-0 mb-md-2"'}>
+                <img src="images_Nike/images/products/${product.images[i]}" onerror="this.src='https://placehold.co/300x300/eeeeee/999999?text=No+Image'" alt="" class="img-fluid"></li>`;
+        }
+
+        let cartItem = cart.find(c => c.id == product.id);
+
+        container.innerHTML += `
+        <div class="product mb-3" data-product-id="${product.id}" data-selected-size="${cartItem == null ? product.sizes[0] : cartItem.size}" data-selected-color="${cartItem == null ? product.colors[0] : cartItem.color}">
+            <div class="row">
+                <div class="col-lg-6 mb-md-4 mb-lg-0 product-images">
+                    <div class="item">
+                        <div class="row">
+                            <div class="col-md-2 col-lg-3 col-xl-2"><div class="item"><ul class="list-unstyled">${imagesHtml}</ul></div></div>
+                            <div class="col-md-10 col-lg-9 col-xl-10 selected-image"><div class="item"><img src="images_Nike/images/products/${product.images[0]}" onerror="this.src='https://placehold.co/500x500/eeeeee/999999?text=No+Image'" alt="" class="img-fluid"></div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 product-content">
+                    <div class="item">
+                        <h3>${product.name}</h3>
+                        <p>${product.description}</p>
+                        <h6 class="price"><strong class="me-3">Price :</strong><p class="mb-0"><span class="before-discount">${product.price} <sup>$</sup></span><span class="after-discount">${discounted.toFixed(2)} <sup>$</sup></span></p></h6>
+                        <h6 class="size my-3"><strong class="me-3">Size :</strong><ul class="list-unstyled mb-0">${createSizes(product.sizes, cartItem)}</ul></h6>
+                        ${cartItem != null ? `<button class="btn mainButton remove" onclick="removeProductFromCart(this, ${product.id})">Remove From Cart</button>` : `<button class="btn mainButton" onclick="addProductToCart(this, ${product.id})">Add To Cart</button>`}
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    }
+}
+
+function buildFeaturedProducts() {
+    let container = document.querySelector('#Feature .products');
+    if (!container) return;
+    container.innerHTML = '';
+
+    for (let product of features) {
+        let discounted = priceAfterDiscount(product.price, product.discount);
+        let indicatorsHtml = '';
+        for (let i = 0; i < product.images.length; i++) {
+            indicatorsHtml += `<li onclick="showFeaturedImg(this)" data-src="${product.images[i]}" ${i == 0 ? 'class="active"' : ''}></li>`;
+        }
+
+        container.innerHTML += `
+        <div class="col-sm-6 col-lg-3 mb-3 product">
+            <div class="item">
+                <p class="offer ${parseFloat(product.discount) == 0 ? 'd-none' : ''}">-${parseFloat(product.discount) * 100}%</p>
+                <div class="head pb-5">
+                    <img src="images_Nike/images/products/${product.images[0]}" onerror="this.src='https://placehold.co/400x400/eeeeee/999999?text=No+Image'" alt="" class="img-fluid">
+                    <i class="fas fa-search key" data-key-popup="product" data-product-id="${product.id}"></i>
+                    <div class="indicators"><ul class="list-unstyled">${indicatorsHtml}</ul></div>
+                </div>
+                <div class="body text-center">
+                    <h6>${product.name}</h6>
+                    <h6>${product.discount != 0 ? `<span class="before-discount">${product.price} <sup>$</sup></span>` : ''}<span class="after-discount">${discounted.toFixed(2)} <sup>$</sup></span></h6>
+                </div>
+            </div>
+        </div>`;
+    }
+}
+
+function initPopups() {
+    let popupTriggers = document.querySelectorAll('i[data-key-popup]');
+    let popupExits = document.querySelectorAll('.brand-popup .exit');
+    let popups = document.querySelectorAll('.brand-popup');
+    let popupBoxes = document.querySelectorAll('.brand-popup .box');
+
+    for (let trigger of popupTriggers) {
+        trigger.addEventListener('click', function () {
+            let key = this.getAttribute('data-key-popup');
+            let popup = document.querySelector(`.brand-popup[popup-name="${key}"]`);
+            if (!popup) return;
+
+            if (this.classList.contains('fa-search')) {
+                let id = this.getAttribute('data-product-id');
+                insertDataIntoPopup(id);
+            } else if (this.classList.contains('fa-cart-shopping')) {
+                showShopProducts();
+            }
+            scrollDownPopup(popup);
+        });
+    }
+
+    for (let exit of popupExits) {
+        exit.addEventListener('click', function () {
+            let key = this.getAttribute('data-key-popup');
+            let popup = document.querySelector(`.brand-popup[popup-name="${key}"]`);
+            if (popup) scrollUpPopup(popup);
+        });
+    }
+
+    for (let popup of popups) {
+        popup.addEventListener('click', () => scrollUpPopup(popup));
+    }
+
+    for (let box of popupBoxes) {
+        box.addEventListener('click', e => e.stopPropagation());
+    }
+}
+
+function initNavLinks() {
+    let navEle = document.querySelector('nav.navbar');
+    let navLinks = document.querySelectorAll('nav.navbar a[data-section-id]');
+
+    for (let link of navLinks) {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+            let sectionId = this.getAttribute('data-section-id');
+            let section = document.querySelector(`#${sectionId}`);
+            if (!section || !navEle) return;
+            let top = section.offsetTop - navEle.clientHeight;
+            window.scrollTo(0, top);
+            updateActiveLink(sectionId);
+        });
+    }
+}
+
+window.addEventListener('scroll', function () {
+    checkScrolledNav();
+    let navEle = document.querySelector('nav.navbar');
+    if (!navEle) return;
+    let sections = ['Home', 'Latest', 'Feature'];
+
+    for (let id of sections) {
+        let section = document.querySelector(`#${id}`);
+        if (!section) continue;
+        if (window.scrollY >= section.offsetTop - navEle.clientHeight) {
+            updateActiveLink(id);
+        }
+    }
+});
+
+window.addEventListener('load', function () {
+    loadCartFromStorage();
+    buildLatestProducts();
+    buildFeaturedProducts();
+    initPopups();
+    initNavLinks();
+    showSlide();
+
+    let loading = document.querySelector('.brand-loadingScreen');
+    if (loading) {
+        loading.classList.add('hide');
+        setTimeout(() => {
+            loading.style.display = 'none';
+            document.body.style.overflowX = 'hidden';
+            document.body.style.overflowY = 'auto';
+        }, 1000);
+    } else {
+        document.body.style.overflowX = 'hidden';
+        document.body.style.overflowY = 'auto';
+    }
+});
+
+function changeMainColor(colorName) {
+    let html = document.documentElement;
+    let newColor = getComputedStyle(html).getPropertyValue(`--${colorName}-color`).trim();
+    html.style.setProperty('--main-color', newColor);
+
+    let logoEle = document.querySelector('#Logo');
+    let correctImgs = document.querySelectorAll('.checkImg');
+    updateImg(colorName, logoEle, 'logo');
+    correctImgs.forEach(img => updateImg(colorName, img, 'correct'));
+}
+
+function updateImg(imgName, imgEle, commonName) {
+    if (!imgEle) return;
+    let currentSrc = imgEle.src || imgEle.getAttribute('href') || '';
+    let currentSrcArr = currentSrc.split('/');
+    currentSrcArr[currentSrcArr.length - 1] = `${imgName}-${commonName}.png`;
+    let newSrc = currentSrcArr.join('/');
+    imgEle.setAttribute('src', newSrc);
+}
+
+function checkScrolledNav() {
+    let navEle = document.querySelector('nav.navbar');
+    if (!navEle) return;
+    if (window.scrollY > 10) navEle.classList.add('scrolled');
+    else navEle.classList.remove('scrolled');
+}
+
+function updateActiveLink(sectionId) {
+    let navEle = document.querySelector('nav.navbar');
+    if (!navEle) return;
+    let currentNavLink = navEle.querySelector('.nav-link.active');
+    if (currentNavLink) currentNavLink.classList.remove('active');
+    let newLink = navEle.querySelector(`a[data-section-id="${sectionId}"]`);
+    if (newLink) newLink.classList.add('active');
 }
